@@ -1,0 +1,16 @@
+{
+	"name": "meteor-frame",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node app.js",
+		"debug": "node app.js -d"
+	},
+	"dependencies": {
+		"mongojs": "0.13.x",
+		"express": "4.x",
+		"body-parser": "1.x",
+		"errorhandler": "1.x",
+		"method-override": "1.x"
+	}
+}
