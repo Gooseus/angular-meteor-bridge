@@ -6,7 +6,7 @@ I disagree with this approach, since I don't think Meteors templating system is 
 
 Since Meteor lives inside of its own world with its own packaging system and executable to run the entire application, front and back, it seems like an all or nothing approach.
 
-This project is an attempt at one approach to leverage the power of Meteors low-latency streaming datasets within a full AngularJS front-end environment
+This project is an attempt at one approach to leverage the power of Meteors low-latency streaming datasets within a full AngularJS front-end environment.
 
 ### Meteor in a Bottle
 

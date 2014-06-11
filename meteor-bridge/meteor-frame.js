@@ -1,11 +1,12 @@
+// This stuff should be moved to a config file of some sort
 Messages = new Meteor.Collection("messages");
-
 Collections = {
 	Messages: Messages
 };
 
 if (Meteor.isClient) {
 	var $client = window.top,
+	// Our client API
 		$api = {
 			insert: function(coll,doc) {
 				console.log('inserting doc: ', doc, coll);
@@ -14,15 +15,16 @@ if (Meteor.isClient) {
 			}
 		};
 
+	// Handle incoming client messages (Router goes here)
 	window.onmessage = function(e) {
 		console.log('message from client',e);
 		var msg = e.data;
 		if(msg.fn) {
 			$api[msg.fn].apply(null,msg.args);
 		}
-		// $client.postMessage({ fn: 'res', msg: 'ECHO: ' + e.data.msg }, '*');
 	};
 
+	// Subscribe to the Server channels
 	Meteor.subscribe('messages');
 
 	// Listen to new additions to our client side collections
@@ -36,23 +38,18 @@ if (Meteor.isClient) {
 			}
 		});
 	});
-
-	// Messages.find().observe({
-	// 	added: function(newDoc) {
-	// 		$client.postMessage({ coll: 'Messages', op: 'added', doc: newDoc  }, '*');
-	// 	}
-	// });
 }
 
+
 if (Meteor.isServer) {
+	// Publish server data, need to find a clever way to update the data that the server exposes to the client
+	// Would definitely need to add user account management of some sort?  Or maybe just access token stuff?
 	Meteor.publish('messages', function() {
-		// console.log('publishing asdf...', arguments);
 		return Messages.find();
 	});
 
 
 	Meteor.startup(function () {
 		// code to run on server at startup
-		// console.log('can we get a message here?');
 	});
 }

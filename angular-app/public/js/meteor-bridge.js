@@ -1,9 +1,11 @@
 angular.module('ngMeteorBridge', [])
+// Start of the service, needs to be FAR more comprehensive
 .service('bridge', [
 	function() {
 		return {};
 	}
 ])
+// Start of the directive, this should probably be an Element directive and create the iframe on the fly
 .directive('mrtBridge', [
 	'bridge',
 	function(bridge) {
