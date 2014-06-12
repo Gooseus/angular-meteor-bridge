@@ -43,12 +43,11 @@ Meteor is open source and integrates, rather than replaces, existing open source
 #### Simplicity Equals Productivity
 The best way to make something seem simple is to have it actually be simple. Accomplish this through clean, classically beautiful APIs.  
 
-*I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, [Rich Hickey - Simple Made Easy](http://www.infoq.com/presentations/Simple-Made-Easy).  
+*I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, [Rich Hickey - Simple Made Easy](http://www.infoq.com/presentations/Simple-Made-Easy).*  
   
-Once you learn the ecosystem and the Meteor pattern, everything is suddenly easy, but that doesn't mean things are simple.  
+*Once you learn the ecosystem and the Meteor pattern, everything is suddenly easy, but that doesn't mean things are simple.*  
   
-Simple is not intertwining the Server and Client environments, that is complex, even if the APIs make it seem easy.*
-
+*Simple is not intertwining the Server and Client environments, that is complex, even if the APIs make it seem easy.*
 
 So those are my current opinions on Meteor, now you can watch a video on [Angular Design Principles](https://www.youtube.com/watch?v=HCR7i5F5L8c) if you so choose.
 
