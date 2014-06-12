@@ -8,7 +8,7 @@ This is my attempt to integrate Meteor's DDP/minMongo system as a data service, 
 
 Well, Meteor is awesome, but not for all the reasons the Meteor community thinks.  It does some things really well and is really powerful... but other aspects are done better elsewhere (IMO).
 
-Lets take a look at (Meteors 7 Principles)[http://docs.meteor.com/#sevenprinciples]:
+Lets take a look at [Meteors 7 Principles](http://docs.meteor.com/#sevenprinciples):
 
 #### Data on the Wire
 Don't send HTML over the network. Send data and let the client decide how to render it.  
@@ -43,14 +43,14 @@ Meteor is open source and integrates, rather than replaces, existing open source
 #### Simplicity Equals Productivity
 The best way to make something seem simple is to have it actually be simple. Accomplish this through clean, classically beautiful APIs.  
 
-*I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, (Rich Hickey - Simple Made Easy)[http://www.infoq.com/presentations/Simple-Made-Easy].  
+*I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, [Rich Hickey - Simple Made Easy](http://www.infoq.com/presentations/Simple-Made-Easy).  
   
 Once you learn the ecosystem and the Meteor pattern, everything is suddenly easy, but that doesn't mean things are simple.  
   
 Simple is not intertwining the Server and Client environments, that is complex, even if the APIs make it seem easy.*
 
 
-So those are my current opinions on Meteor, now you can watch a video on (Angular Design Principles)[https://www.youtube.com/watch?v=HCR7i5F5L8c] if you so choose.
+So those are my current opinions on Meteor, now you can watch a video on [Angular Design Principles](https://www.youtube.com/watch?v=HCR7i5F5L8c) if you so choose.
 
 I'll outline the actual principles later and make my responses later and hopefully come up with synthesis later that makes the case for combining these principles.  Basically, decoupling is good, Angular is very decoupled, Meteor is not.
 
