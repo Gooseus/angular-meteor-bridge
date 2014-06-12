@@ -4,41 +4,53 @@ This is my attempt to integrate Meteor's DDP/minMongo system as a data service, 
 
 ### Why?
 
-*tldr; I mostly agree with Meteors design principles, but take enormous issue with the tight coupling of the backend data-service and frontend templating system.*
+**tldr; I mostly agree with Meteors design principles, but take enormous issue with the tight coupling of the backend data-service and frontend templating system.**
 
 Well, Meteor is awesome, but not for all the reasons the Meteor community thinks.  It does some things really well and is really powerful... but other aspects are done better elsewhere (IMO).
 
 Lets take a look at (Meteors 7 Principles)[http://docs.meteor.com/#sevenprinciples]:
 
 #### Data on the Wire
-Don't send HTML over the network. Send data and let the client decide how to render it.
-__Couldn't agree more.  Of course, what they really mean is "let our Blaze templating system decide how to render it".__
+Don't send HTML over the network. Send data and let the client decide how to render it.  
+
+*Couldn't agree more.  Of course, what they really mean is "let our Blaze templating system decide how to render it".*
 
 #### One Language
-Write both the client and the server parts of your interface in JavaScript.
-__That's fine with me, personally, but wouldn't it be better if you could leverage this technology in multiple architectures?__
+Write both the client and the server parts of your interface in JavaScript.  
+
+*That's fine with me, personally, but wouldn't it be better if you could leverage this technology in multiple architectures?*
 
 #### Database Everywhere
-Use the same transparent API to access your database from the client or the server.
-__I can dig it__
+Use the same transparent API to access your database from the client or the server.  
+
+*I can dig it*
 
 #### Latency Compensation
-On the client, use prefetching and model simulation to make it look like you have a zero-latency connection to the database.
-__Yup, this is what they do REALLY well.__
+On the client, use prefetching and model simulation to make it look like you have a zero-latency connection to the database.  
+
+*Yup, this is what they do REALLY well.*
 
 #### Full Stack Reactivity
-Make realtime the default. All layers, from database to template, should make an event-driven interface available.
-__I would say that realtime data should be made available when needed, but whatever.__
+Make realtime the default. All layers, from database to template, should make an event-driven interface available.  
+
+*I would say that realtime data should be made available when needed, but whatever.*
 
 #### Embrace the Ecosystem
-Meteor is open source and integrates, rather than replaces, existing open source tools and frameworks.
-__This is where you lose me.  They mean Meteor allows integration of existing open source tools and frameworks... so long as you embrace their ecosystem.  I already embraced an ecosystem, it's called NPM and the client-side module system in Angular is the best I've seen.  Why must I learn a whole new ecosystem to use this product?__
+Meteor is open source and integrates, rather than replaces, existing open source tools and frameworks.  
+
+*This is where you lose me.  They mean Meteor allows integration of existing open source tools and frameworks... so long as you embrace their ecosystem.  I already embraced an ecosystem, it's called NPM and the client-side module system in Angular is the best I've seen.  Why couldn't Meteor just be a client-side library and NPM module again?*
 
 #### Simplicity Equals Productivity
-The best way to make something seem simple is to have it actually be simple. Accomplish this through clean, classically beautiful APIs.
-__I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, (Rich Hickey - Simple Made Easy)[http://www.infoq.com/presentations/Simple-Made-Easy].  Once you learn the ecosystem and the Meteor pattern, everything is suddenly easy, but that doesn't mean things are simple.  Simple is not intertwining the Server and Client environments, that is complex, even if the APIs make it seem easy.__
+The best way to make something seem simple is to have it actually be simple. Accomplish this through clean, classically beautiful APIs.  
 
-So those are my opinions on Meteor, now you can watch a video on (Angular Design Principles)[https://www.youtube.com/watch?v=HCR7i5F5L8c] if you so choose.
+*I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, (Rich Hickey - Simple Made Easy)[http://www.infoq.com/presentations/Simple-Made-Easy].  
+  
+Once you learn the ecosystem and the Meteor pattern, everything is suddenly easy, but that doesn't mean things are simple.  
+  
+Simple is not intertwining the Server and Client environments, that is complex, even if the APIs make it seem easy.*
+
+
+So those are my current opinions on Meteor, now you can watch a video on (Angular Design Principles)[https://www.youtube.com/watch?v=HCR7i5F5L8c] if you so choose.
 
 I'll outline the actual principles later and make my responses later and hopefully come up with synthesis later that makes the case for combining these principles.  Basically, decoupling is good, Angular is very decoupled, Meteor is not.
 
