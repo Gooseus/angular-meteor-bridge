@@ -8,12 +8,24 @@ if (Meteor.isClient) {
 	var $client = window.top,
 	// Our client API
 		$api = {
-			insert: function(coll,doc) {
-				console.log('inserting doc: ', doc, coll);
+			insertMessage: function(coll,doc) {
+				console.log('inserting message doc: ', doc, coll);
 				doc.created_at = new Date();
 				Collections[coll].insert(doc);
+			},
+			setSubscription: function(channel,params) {
+				// Subscribe to the Server channels
+				console.log('setting a subscription', channel, params);
+				Meteor.subscribe(channel,params);
 			}
 		};
+
+
+	Meteor.startup(function () {
+		// code to run on server at startup
+		$client.postMessage({ op: 'startup' }, '*');
+	});
+
 
 	// Handle incoming client messages (Router goes here)
 	window.onmessage = function(e) {
@@ -24,17 +36,14 @@ if (Meteor.isClient) {
 		}
 	};
 
-	// Subscribe to the Server channels
-	Meteor.subscribe('messages');
-
 	// Listen to new additions to our client side collections
 	Object.keys(Collections).forEach(function(coll) {
 		Collections[coll].find().observe({
 			added: function(doc) {
-				$client.postMessage({ coll: coll, op: 'added', doc: doc  }, '*');
+				$client.postMessage({ coll: coll, op: 'added', data: doc  }, '*');
 			},
 			removed: function(doc) {
-				$client.postMessage({ coll: coll, op: 'removed', doc: doc  }, '*');	
+				$client.postMessage({ coll: coll, op: 'removed', data: doc  }, '*');	
 			}
 		});
 	});
@@ -44,8 +53,10 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 	// Publish server data, need to find a clever way to update the data that the server exposes to the client
 	// Would definitely need to add user account management of some sort?  Or maybe just access token stuff?
-	Meteor.publish('messages', function() {
-		return Messages.find();
+	Meteor.publish('messages', function(params) {
+		console.log('what are publishing again?', params);
+		// I suppose this is where we'd do a check, but everything is public for now
+		return Messages.find(params);
 	});
 
 

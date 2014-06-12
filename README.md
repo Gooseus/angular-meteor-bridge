@@ -1,18 +1,54 @@
-# Angular Meteor Bridge
+# Angular-Meteor Bridge
 
-I've seen a few projects attempt to integrate Angular and Meteor, but nothing has seemed overly impressive and leaves most of the UX heavy lifting to Meteor's templating system.
+This is my attempt to integrate Meteor's DDP/minMongo system as a data service, much like $resource, in to a clean Angular environment.
 
-I disagree with this approach, since I don't think Meteors templating system is very impressive.  I'd much rather see an integration where Meteor provides their persistent DDP-based miniMongo system to the client and the client decides how to integrate the data with their framework/templating system of choice.
+### Why?
 
-Since Meteor lives inside of its own world with its own packaging system and executable to run the entire application, front and back, it seems like an all or nothing approach.
+*tldr; I mostly agree with Meteors design principles, but take enormous issue with the tight coupling of the backend data-service and frontend templating system.*
 
-This project is an attempt at one approach to leverage the power of Meteors low-latency streaming datasets within a full AngularJS front-end environment.
+Well, Meteor is awesome, but not for all the reasons the Meteor community thinks.  It does some things really well and is really powerful... but other aspects are done better elsewhere (IMO).
 
-### Meteor in a Bottle
+Lets take a look at (Meteors 7 Principles)[http://docs.meteor.com/#sevenprinciples]:
 
-The approach is basically to make a very simple Meteor app and contain it within an iframe.  Then build an API in to the iframe and wrap the whole thing in an Angular directive with accompanying service.
+#### Data on the Wire
+Don't send HTML over the network. Send data and let the client decide how to render it.
+__Couldn't agree more.  Of course, what they really mean is "let our Blaze templating system decide how to render it".__
 
-The directive will load the Meteor app and plug in the service, and the service will be shared throughout the Angular app as a data-access layer, much like $http or $resource.
+#### One Language
+Write both the client and the server parts of your interface in JavaScript.
+__That's fine with me, personally, but wouldn't it be better if you could leverage this technology in multiple architectures?__
+
+#### Database Everywhere
+Use the same transparent API to access your database from the client or the server.
+__I can dig it__
+
+#### Latency Compensation
+On the client, use prefetching and model simulation to make it look like you have a zero-latency connection to the database.
+__Yup, this is what they do REALLY well.__
+
+#### Full Stack Reactivity
+Make realtime the default. All layers, from database to template, should make an event-driven interface available.
+__I would say that realtime data should be made available when needed, but whatever.__
+
+#### Embrace the Ecosystem
+Meteor is open source and integrates, rather than replaces, existing open source tools and frameworks.
+__This is where you lose me.  They mean Meteor allows integration of existing open source tools and frameworks... so long as you embrace their ecosystem.  I already embraced an ecosystem, it's called NPM and the client-side module system in Angular is the best I've seen.  Why must I learn a whole new ecosystem to use this product?__
+
+#### Simplicity Equals Productivity
+The best way to make something seem simple is to have it actually be simple. Accomplish this through clean, classically beautiful APIs.
+__I agree.  Though I think our definitions of Simple are not the same.  What I think you mean is Easy, (Rich Hickey - Simple Made Easy)[http://www.infoq.com/presentations/Simple-Made-Easy].  Once you learn the ecosystem and the Meteor pattern, everything is suddenly easy, but that doesn't mean things are simple.  Simple is not intertwining the Server and Client environments, that is complex, even if the APIs make it seem easy.__
+
+So those are my opinions on Meteor, now you can watch a video on (Angular Design Principles)[https://www.youtube.com/watch?v=HCR7i5F5L8c] if you so choose.
+
+I'll outline the actual principles later and make my responses later and hopefully come up with synthesis later that makes the case for combining these principles.  Basically, decoupling is good, Angular is very decoupled, Meteor is not.
+
+My goal in explaining all this is to hopefuly gain some traction in the wider community to get involved with Meteor and to convince the larger Meteor community to rethink their design assumptions.
+
+### Putting Meteor in a Bottle
+
+The approach is basically to make a very simple Meteor app and contain it within an iframe.  Then build an API in to the iframe and wrap the whole thing in an Angular directive with an accompanying service.
+
+The directive will load the iframe with the Meteor app and connect the service which will then be shared throughout the Angular app as a data-access layer, much like `$resource`.
 
 ### Goals
 
@@ -21,8 +57,11 @@ The directive will load the Meteor app and plug in the service, and the service 
 
 ### Is this all really necessary?
 
-Honestly, I don't know.... probably not, but then again, maybe?  I'll find out and get back to you on this.
+Is anything really necessary?  I, personally, want to see what can happen and so far I'm liking how things are coming together, though I've barely scratched the surface.
 
 ## Documentation
 
-The angular app is in `angular-app`, the meteor app is in `meteor-bridge`.  That should be enough to get started, more coming soon.
+The angular app is in `angular-app`, the meteor app is in `meteor-bridge`.
+
+You will need to run both, angular-app defaults to port 8000, meteor always defaults to port 3000.  The angular-app has the meteor-bridge hardcoded to localhost:3000.
+

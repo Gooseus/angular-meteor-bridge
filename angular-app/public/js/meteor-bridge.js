@@ -2,7 +2,9 @@ angular.module('ngMeteorBridge', [])
 // Start of the service, needs to be FAR more comprehensive
 .service('bridge', [
 	function() {
-		return {};
+		return {
+			queue: []
+		};
 	}
 ])
 // Start of the directive, this should probably be an Element directive and create the iframe on the fly
@@ -14,15 +16,22 @@ angular.module('ngMeteorBridge', [])
 			link: function($scope,$el,$attrs) {
 				// console.log('whats on our iframe?', $el);
 				$el.css('display','none');
-				
-				$scope.$watch(function() {
-					return bridge.channel;
-				}, function(msg) {
-					if(msg) {
-						console.log('posting message to iframe', msg);
-						$el[0].contentWindow.postMessage(msg,'*');
-						delete bridge.channel;
-					}
+
+				// Wait for meteor to startup
+				$scope.$on('meteor::startup', function() {
+					// Then start watching the bridge queue
+					$scope.$watch(function() {
+						return bridge.queue.length;
+					}, function(qlen) {
+						console.log('current queue', qlen, bridge.queue);
+						if(qlen) {
+							var msgs = bridge.queue.splice(0,qlen);
+
+							msgs.forEach(function(msg) {
+								$el[0].contentWindow.postMessage(msg,'*');
+							});
+						}
+					});
 				});
 			}
 		}
