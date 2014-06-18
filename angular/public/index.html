@@ -8,8 +8,30 @@
 	<body ng-controller="AppController">
 		<h1>Simple Shared List App</h1>
 		<div>
-			<div class="col-md-8">
-				This is where I'm gonna put some simple list stuff I think
+			<div class="col-md-4">
+				<p>This is where I'm gonna put some simple list stuff I think</p>
+				<ul>
+					<li><strong>Step 1</strong> - <a href="#" ng-click="createList()">Create a List</a></li>
+					<li><strong>Step 2</strong> - Add items to your list</li>
+					<li><strong>Step 3</strong> - Share your list with friends</li>
+					<li><strong>Step 4</strong> - Watch them add items to your list</li>
+					<li><strong>Step 5</strong> - Comment on list items with your friends</li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<h3>Lists</h3>
+				<ul ng-show="Lists.collection.length">
+					<li ng-repeat="list in Lists.collection">
+						<strong>{{ list.name }}</strong>
+						<ul ng-show="list.items.length">
+							<li ng-repeat="item in list.items">
+								{{ item.text }}
+							</li>
+						</ul>
+						<p ng-hide="list.items.length">You have no list items - <a href="#" ng-click="createItem(list)">Create an item</a></p>
+					</li>
+				</ul>
+				<p ng-hide="lists.length">You have no lists - <a href="#" ng-click="createList()">You should create one</a></p>
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-default">
@@ -43,13 +65,13 @@
 			</div>
 		</div>
 
-		<iframe mrt-bridge src="http://localhost:3000"></iframe>
+		<iframe meteor-frame src="http://localhost:3000"></iframe>
 
 		<script type="text/javascript" src="/js/angular.min.js"></script>
-		<script type="text/javascript" src="/js/meteor-bridge.js"></script>
+		<script type="text/javascript" src="/js/meteor-frame.js"></script>
 		<script type="text/javascript" src="/js/app.js"></script>
 		<script type="text/javascript">
-			angular.bootstrap(document, [ 'bridgeTest' ]);
+			angular.bootstrap(document, [ 'meteorFrameApp' ]);
 		</script>
 	</body>
 </html>

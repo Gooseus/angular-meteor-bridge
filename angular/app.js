@@ -8,8 +8,8 @@ var express = require('express'),
 	errorHandler = require('errorhandler'),
 	methodOverride = require('method-override'),
 	port = 8000,
-
-	indexFile = fs.readFileSync('./public/index.html');
+	indexHtml = './public/index.html';
+	// indexFile = fs.readFileSync('./public/index.html');
 
 app.use(methodOverride());
 app.use(bodyParser());
@@ -21,7 +21,8 @@ app.use(errorHandler({
 
 app.get('*', function(req,res) {
 	res.set('Content-Type', 'text/html');
-	res.send(indexFile);
+	fs.createReadStream(indexHtml).pipe(res);
+	// res.send(indexFile);
 });
 
 app.listen(port);

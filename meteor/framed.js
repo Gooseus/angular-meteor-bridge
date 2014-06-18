@@ -1,14 +1,27 @@
 // This stuff should be moved to a config file of some sort
 Messages = new Meteor.Collection("messages");
+Lists = new Meteor.Collection("lists");
+
 Collections = {
-	Messages: Messages
+	Messages: Messages,
+	Lists: Lists
 };
+Channels = {
+	'messages': function(params) {
+		console.log('what are publishing again?', params);
+		// I suppose this is where we'd do a check, but everything is public for now
+		return Messages.find(params);
+	},
+	'lists': function(params) {
+		return Lists.find(params);
+	}
+}
 
 if (Meteor.isClient) {
 	var $client = window.top,
 	// Our client API
 		$api = {
-			insertMessage: function(coll,doc) {
+			insertDocument: function(coll,doc) {
 				console.log('inserting message doc: ', doc, coll);
 				doc.created_at = new Date();
 				Collections[coll].insert(doc);
@@ -16,6 +29,8 @@ if (Meteor.isClient) {
 			setSubscription: function(channel,params) {
 				// Subscribe to the Server channels
 				console.log('setting a subscription', channel, params);
+
+				// TODO we should check the channel against the configuration and send back an error if it's not configured
 				Meteor.subscribe(channel,params);
 			}
 		};
@@ -29,8 +44,8 @@ if (Meteor.isClient) {
 
 	// Handle incoming client messages (Router goes here)
 	window.onmessage = function(e) {
-		console.log('message from client',e);
 		var msg = e.data;
+		console.log('message from angular',msg);
 		if(msg.fn) {
 			$api[msg.fn].apply(null,msg.args);
 		}
@@ -53,14 +68,19 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 	// Publish server data, need to find a clever way to update the data that the server exposes to the client
 	// Would definitely need to add user account management of some sort?  Or maybe just access token stuff?
-	Meteor.publish('messages', function(params) {
-		console.log('what are publishing again?', params);
-		// I suppose this is where we'd do a check, but everything is public for now
-		return Messages.find(params);
+	// Meteor.publish('messages', function(params) {
+	// 	console.log('what are publishing again?', params);
+	// 	// I suppose this is where we'd do a check, but everything is public for now
+	// 	return Messages.find(params);
+	// });
+
+	
+	Object.keys(Channels).forEach(function(ch) {
+		Meteor.publish(ch, Channels[ch]);
 	});
 
 
-	Meteor.startup(function () {
-		// code to run on server at startup
-	});
+	// Meteor.startup(function () {
+	// 	// code to run on server at startup
+	// });
 }

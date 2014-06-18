@@ -1,14 +1,25 @@
-angular.module('ngMeteorBridge', [])
+angular.module('meteorFrame', [])
 // Start of the service, needs to be FAR more comprehensive
 .service('bridge', [
 	function() {
-		return {
-			queue: []
+		var svc = {
+			queue: [],
+			queueRpc: function(fn,args) {
+				var rpc = {
+						fn: fn,
+						args: args
+					};
+				
+				svc.queue.push(rpc);
+			}
 		};
+
+
+		return svc;
 	}
 ])
 // Start of the directive, this should probably be an Element directive and create the iframe on the fly
-.directive('mrtBridge', [
+.directive('meteorFrame', [
 	'bridge',
 	function(bridge) {
 		return {
