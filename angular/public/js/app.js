@@ -74,6 +74,13 @@ app.factory('Lists', [
 				if(idx!==-1) {
 					svc.collection.splice(idx,1);
 				}
+			},
+			changed: function(doc) {
+				var idx = Utility.inColl(svc.collection,'_id',doc._id);
+				
+				if(idx!==-1) {
+					angular.extend(svc.collection[idx], doc);
+				}
 			}
 		};
 
@@ -138,13 +145,11 @@ app.controller('AppController', [
 				room: room,
 				user: $scope.user.name || 'anonymous'
 			};
-			
+
 			bridge.queueRpc('insertDocument', [ 'Messages', msg ]);
 
 			delete $scope.msg;
 		};
-
-
 
 		$scope.createList = function() {
 			var list = {
@@ -162,7 +167,21 @@ app.controller('AppController', [
 			bridge.queueRpc('insertDocument', [ 'Lists', list ]);
 		};
 
+		$scope.addItem = function(list) {
+			// We need to modify an item on a document here... that's a different call from insertDocument, so lets create that next level url shit
+			// updateDocument ?  insertSubDocument ?
+			
+			var item = {
+				text: prompt('Add item to '+list.name),
+				votes: 0,
+				comments: []
+			};
+
+			bridge.queueRpc('updateDocument', [ 'Lists', list._id, { $addToSet: { 'items': item } } ]);
+		};
+
 		$scope.setSubscription('messages', { room: room });
 		$scope.setSubscription('lists', { uri: room });
 	}
 ]);
+;

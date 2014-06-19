@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<title>Shared Lists - Clever URL Forthcoming</title>
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
 	</head>
 	<body ng-controller="AppController">
@@ -22,16 +23,16 @@
 				<h3>Lists</h3>
 				<ul ng-show="Lists.collection.length">
 					<li ng-repeat="list in Lists.collection">
-						<strong>{{ list.name }}</strong>
+						<strong>{{ list.name }}</strong> <a href="#" ng-click="addItem(list)">add</a>
 						<ul ng-show="list.items.length">
 							<li ng-repeat="item in list.items">
 								{{ item.text }}
 							</li>
 						</ul>
-						<p ng-hide="list.items.length">You have no list items - <a href="#" ng-click="createItem(list)">Create an item</a></p>
+						<p ng-hide="list.items.length">You have no items - <a href="#" ng-click="addItem(list)">Add an item</a></p>
 					</li>
 				</ul>
-				<p ng-hide="lists.length">You have no lists - <a href="#" ng-click="createList()">You should create one</a></p>
+				<p ng-hide="Lists.collection.length">You have no lists - <a href="#" ng-click="createList()">You should create one</a></p>
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-default">

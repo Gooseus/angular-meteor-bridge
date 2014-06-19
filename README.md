@@ -71,10 +71,7 @@ Is anything really necessary?  I, personally, want to see what I can make happen
 
 The angular app is in `angular`, the meteor app is in `meteor`.
 
-You will need to run both, angular-app defaults to port 8000, meteor always defaults to port 3000.  The angular-app has the meteor-bridge hardcoded to localhost:3000.
+You will need to run both, angular-app defaults to port 8000, meteor always defaults to port 3000.  The angular app has the meteor bridge hardcoded to localhost:3000.
 
-## The Test App
+I'm gonna put more documentation on each piece in their respective folders.
 
-The test app is actually something I've always wanted to have, and perhaps exists in the wild somewhere, though I'm looking to create the simplest form possible.
-
-Right now there is a working Simple Chat app, if you go to localhost:3000/room/[ room key ] your messages will only be broadcast to other people connected to that room.  Basically a really simple IRC without any of the other cool stuff.

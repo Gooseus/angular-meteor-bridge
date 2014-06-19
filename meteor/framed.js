@@ -22,9 +22,14 @@ if (Meteor.isClient) {
 	// Our client API
 		$api = {
 			insertDocument: function(coll,doc) {
-				console.log('inserting message doc: ', doc, coll);
+				console.log('inserting doc: ', doc, coll);
 				doc.created_at = new Date();
 				Collections[coll].insert(doc);
+			},
+			updateDocument: function(coll,_id,modify) {
+				console.log('updating doc: ', _id, coll, modify);
+				modify.$set = { updated_at: new Date() };
+				Collections[coll].update(_id,modify);
 			},
 			setSubscription: function(channel,params) {
 				// Subscribe to the Server channels
@@ -59,6 +64,9 @@ if (Meteor.isClient) {
 			},
 			removed: function(doc) {
 				$client.postMessage({ coll: coll, op: 'removed', data: doc  }, '*');	
+			},
+			changed: function(ndoc,odoc) {
+				$client.postMessage({ coll: coll, op: 'changed', data: ndoc }, '*');
 			}
 		});
 	});
