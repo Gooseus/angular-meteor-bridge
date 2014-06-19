@@ -44,7 +44,7 @@ The best way to make something seem simple is to have it actually be simple. Acc
 
 So those are my current opinions on Meteor, you can watch a video on [Angular Design Principles](https://www.youtube.com/watch?v=HCR7i5F5L8c) if you so choose, I'll try and outline the principles later and hopefully come up with a synthesis of the two that makes the case for combining the principles.  Basically - decoupling is good, Angular is very decoupled, Meteor is not.
 
-My goal in going through this lengthy explanation is two-fold.  One, I'm trying to express my thoughts for my own benefit and learning; second, I'm hoping to engage a wider audience about with an honest discussion of the benefits and detriments of both libraries.
+My goal in going through this lengthy explanation is two-fold.  One, I'm trying to express my thoughts for my own benefit and learning; second, I'm hoping to engage a wider audience with an honest discussion of the benefits and detriments of both frameworks/approaches.
 
 My goal in building this project is to learn more about the deeper patterns possible with both systems and hope to create something that, if not intrinsically useful, will help inspire more people to look at both technologies.
 
