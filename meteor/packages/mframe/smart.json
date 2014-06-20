@@ -1,0 +1,8 @@
+{
+    "name": "mframe",
+    "description": "Meteor iFrame Interface",
+    "homepage": "https://github.com/gooseus/mframe",
+    "author": "Shawn Marincas (https://github.com/gooseus)",
+    "version": "0.0.5",
+    "git": "https://github.com/gooseus/mframe.git"
+}

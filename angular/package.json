@@ -1,6 +1,6 @@
 {
-	"name": "meteor-frame",
-	"version": "0.0.1",
+	"name": "listverse",
+	"version": "0.0.5",
 	"private": true,
 	"scripts": {
 		"start": "node app.js",
