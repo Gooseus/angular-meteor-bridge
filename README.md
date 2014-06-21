@@ -1,5 +1,5 @@
-# Angular Meteor Frame
-## iframe interface for piping data between an angular and meteor apps
+## Angular Meteor Frame
+### iframe interface for piping data between angular and meteor apps
 
 Comes with:
 * mframe directive for wrapping the $meteor interface around an iframe pointed at a Meteor app
