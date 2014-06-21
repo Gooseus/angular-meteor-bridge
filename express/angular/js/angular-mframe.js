@@ -121,10 +121,16 @@ angular.module('ngMFrame', [])
 	'$meteor',
 	function($meteor) {
 		return {
-			scope: {},
+			restrict: 'E',
+			scope: {
+				'src': '@'
+			},
+			template: '<iframe style="display: none;" ng-src="{{ mframe }}"></iframe>',
+			replace: true,
 			link: function($scope,$el,$attrs) {
-				// console.log('whats on our iframe?', $el);
-				$el.css('display','none');
+				function postMessage(msg) {
+					$el[0].contentWindow.postMessage(msg,'*');
+				}
 
 				// Wait for meteor to startup
 				$scope.$on('mframe.startup', function() {
@@ -134,11 +140,7 @@ angular.module('ngMFrame', [])
 					}, function(qlen) {
 						console.log('current queue', qlen, $meteor.queue);
 						if(qlen) {
-							var msgs = $meteor.queue.splice(0,qlen);
-
-							msgs.forEach(function(msg) {
-								$el[0].contentWindow.postMessage(msg,'*');
-							});
+							$meteor.queue.splice(0,qlen).forEach(postMessage);
 						}
 					});
 				});

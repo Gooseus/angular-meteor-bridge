@@ -9,6 +9,17 @@ angular.module('listverse.services', [])
 				parser.href = $location.absUrl();
 				return parser[part];
 			},
+			splitPathRoute: function(path) {
+				var route = {},
+					paths = path.split('/'),
+					plen = paths.length;
+
+				for(var i=0;i<plen;i+=2) {
+					route[paths[i]] = paths[i+1];
+				}
+
+				return route;
+			},
 			randomId: function() {
 				return Math.floor(Date.now()/1000).toString('16'); + Math.floor(Math.random()*1000).toString('16');
 			}

@@ -3,31 +3,15 @@ var app = angular.module('listverse.app', [ 'listverse.services', 'ngMFrame' ])
 app.controller('AppController', [
 	'$rootScope', '$scope', '$meteor', '$window', '$util', '$api',
 	function ($rootScope, $scope, $meteor, $window, $util, $api) {
-
-		var random = $util.randomId();
+		var path = $util.locationPart('pathname').slice(1),
+			route = $util.splitPathRoute(path),
+			random = $util.randomId();
 
 		// save rando id in cookie until signup?
 		$scope.user = {
 			rando: random,
 			name: 'anonyrand-' + random
 		};
-
-		// subscribe to chat messages for verse / channel
-		// find channel
-
-		function pathRoute(paths) {
-			var route = {},
-				plen = paths.length;
-
-			for(var i=0;i<plen;i+=2) {
-				route[paths[i]] = paths[i+1];
-			}
-
-			return route;
-		}
-
-		var paths = $util.locationPart('pathname').slice(1).split('/'),
-			route = pathRoute(paths);
 
 		// basic routing type stuff
 		$scope.verse = route.verse || 'home'; // the home listverse!
