@@ -1,114 +1,46 @@
-// This is what's gonna go in my super simple smart package!
-// function connectMFrame(config) {
-// 	var mFrame = {
-// 		collections: {},
-// 		channels: {}
-// 	};
-
-// 	config.collections.forEach(function(name){
-// 		mFrame.collections[name] = new Meteor.Collection(name);
-// 	});
-	
-// 	Object.keys(config.channels).forEach(function(key) {
-// 		mFrame.channels[key] = config.channels[key];
-// 	});
-
-// 	mFrame.router = config.router;
-
-// 	if (Meteor.isClient) {
-// 		var $client = window.top,
-// 			observers = {
-// 				added: function(coll) {
-// 					return function(doc) {
-// 						$client.postMessage({ coll: coll, op: 'added', data: doc  }, '*');
-// 					}
-// 				},
-// 				removed: function(coll) {
-// 					return function(doc) {
-// 						$client.postMessage({ coll: coll, op: 'removed', data: doc  }, '*');	
-// 					}
-// 				},
-// 				changed: function(coll) {
-// 					return function(ndoc,odoc) {
-// 						$client.postMessage({ coll: coll, op: 'changed', data: ndoc }, '*');
-// 					}
-// 				}
-// 			};
-
-// 		// Handle incoming client messages (Router goes here)
-// 		window.onmessage = function(e) {
-// 			var msg = e.data;
-// 			console.log('message from angular',mFrame.router,msg);
-// 			if(msg.fn) {
-// 				mFrame.router[msg.fn].apply(null,msg.args);
-// 			}
-// 		};
-
-// 		Object.keys(mFrame.collections).forEach(function(coll) {
-// 			var actions = {};
-
-// 			config.observers[coll].forEach(function(name) {
-// 				actions[name] = observers[name](coll);
-// 			});
-
-// 			mFrame.collections[coll].find().observe(actions);
-// 		});
-
-// 		Meteor.startup(function () {
-// 			// code to run on server at startup
-// 			$client.postMessage({ op: 'startup' }, '*');
-// 		});
-// 	}
-
-// 	if (Meteor.isServer) {
-// 		Object.keys(mFrame.channels).forEach(function(ch) {
-// 			// console.log('publishing', ch, mFrame.Channels[ch])
-// 			Meteor.publish(ch, mFrame.channels[ch]);
-// 		});
-// 	}
-
-// 	return mFrame;
-// }
-
-
-
-// This is where you configure your meteor frame
-
-
-
-mFrame = connectMFrame({
+// This is the entire Meteor app side of the iframe (mframe)
+// Initialize the MFrame with output channels and the input api
+new MFrame({
 	collections: [ 'messages', 'lists' ],
+	// These specify which channels we publish from the server
+	// TODO should probably follow the array style for standard forms like these simple find cursors
 	channels: {
 		'messages': function(params) {
 			console.log('what are publishing again?', params);
 			// I suppose this is where we'd do a check, but everything is public for now
-			return mFrame.collections['messages'].find(params);
+			return this.collections['messages'].find(params);
 		},
 		'lists':  function(params) {
 			console.log('what are publishing again?', params);
 			// I suppose this is where we'd do a check, but everything is public for now
-			return mFrame.collections['lists'].find(params);
+			return this.collections['lists'].find(params);
 		}
 	},
-	router: {
+	// This is the API we're listening to from outside the iframe
+	api: {
+		// Perform miniMongo operations from the client side (can't use complex queries, those need to go through separate channel to DB)
+		// These can always go through another service to update the database
 		insert: function(coll,doc) {
 			console.log('inserting doc: ', doc, coll);
 			doc.created_at = new Date();
-			mFrame.collections[coll].insert(doc);
+			this.collections[coll].insert(doc);
 		},
 		update: function(coll,_id,modify) {
 			console.log('updating doc: ', _id, coll, modify);
 			modify.$set = { updated_at: new Date() };
-			mFrame.collections[coll].update(_id,modify);
+			this.collections[coll].update(_id,modify);
 		},
+		// Subscribe to the Server channels
+		// We definitely need this one for reactive stuff
 		subscribe: function(channel,params) {
-			// Subscribe to the Server channels
 			console.log('setting a subscription', channel, params);
-
 			// TODO we should check the channel against the configuration and send back an error if it's not configured
 			Meteor.subscribe(channel,params);
 		}
 	},
+	// These specify which Cursor events we broadcasting outside the mframe
+	// TODO all optional, or mandatory with standard forms for specifying function to run before broadcasting data
+	// change name ? broadcasts?
 	observers: {
 		'lists': [ 'added', 'removed', 'changed' ],
 		'messages': [ 'added', 'removed', 'changed' ]

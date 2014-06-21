@@ -1,70 +1,84 @@
-connectMFrame = function(config) {
-	var mFrame = {
-		collections: {},
-		channels: {}
-	};
+function pairToObj(obj,pair) { 
+	if(!obj) obj = {};
 
+	obj[pair[0]] = pair[1];
+	return obj;
+}
+
+function bindFnObj(ctx,obj) {
+	return Object.keys(obj)
+		.map(function(key) { 
+			return [ key, obj[key].bind(ctx) ];
+		})
+		.reduce(pairToObj)
+}
+
+MFrame = function MFrame(config) {
+	var self = this;
+
+	self.channels = bindFnObj(self,config.channels);
+	self.api = bindFnObj(self,config.api);
+
+	self.collections = {};
 	config.collections.forEach(function(name){
-		mFrame.collections[name] = new Meteor.Collection(name);
+		self.collections[name] = new Meteor.Collection(name);
 	});
 	
-	Object.keys(config.channels).forEach(function(key) {
-		mFrame.channels[key] = config.channels[key];
-	});
-
-	mFrame.router = config.router;
+	// Object.keys(config.channels).forEach(function(key) {
+	// 	self.channels[key] = config.channels[key];
+	// });
 
 	if (Meteor.isClient) {
-		var $client = window.top,
-			observers = {
-				added: function(coll) {
-					return function(doc) {
-						$client.postMessage({ coll: coll, op: 'added', data: doc  }, '*');
-					}
-				},
-				removed: function(coll) {
-					return function(doc) {
-						$client.postMessage({ coll: coll, op: 'removed', data: doc  }, '*');	
-					}
-				},
-				changed: function(coll) {
-					return function(ndoc,odoc) {
-						$client.postMessage({ coll: coll, op: 'changed', data: ndoc }, '*');
-					}
+		self.$broadcast = window.top.postMessage.bind(window.top);
+
+		Meteor.startup(function () {
+			// code to run on server at startup
+			self.$broadcast({ op: 'startup' }, '*');
+		});
+
+		var observers = {
+			added: function(coll) {
+				return function(doc) {
+					self.$broadcast({ coll: coll, op: 'added', data: doc  }, '*');
 				}
-			};
+			},
+			removed: function(coll) {
+				return function(doc) {
+					self.$broadcast({ coll: coll, op: 'removed', data: doc  }, '*');	
+				}
+			},
+			changed: function(coll) {
+				return function(ndoc,odoc) {
+					self.$broadcast({ coll: coll, op: 'changed', data: ndoc }, '*');
+				}
+			}
+		};
 
 		// Handle incoming client messages (Router goes here)
 		window.onmessage = function(e) {
 			var msg = e.data;
-			console.log('message from angular',mFrame.router,msg);
+			console.log('message from angular',self.api,msg);
 			if(msg.fn) {
-				mFrame.router[msg.fn].apply(null,msg.args);
+				self.api[msg.fn].apply(null,msg.args);
 			}
 		};
 
-		Object.keys(mFrame.collections).forEach(function(coll) {
+		Object.keys(self.collections).forEach(function(coll) {
 			var actions = {};
 
 			config.observers[coll].forEach(function(name) {
 				actions[name] = observers[name](coll);
 			});
 
-			mFrame.collections[coll].find().observe(actions);
-		});
-
-		Meteor.startup(function () {
-			// code to run on server at startup
-			$client.postMessage({ op: 'startup' }, '*');
+			self.collections[coll].find().observe(actions);
 		});
 	}
+
 
 	if (Meteor.isServer) {
-		Object.keys(mFrame.channels).forEach(function(ch) {
-			// console.log('publishing', ch, mFrame.Channels[ch])
-			Meteor.publish(ch, mFrame.channels[ch]);
+		// Publish each model to its channel on the server
+		Object.keys(self.channels).forEach(function(ch) {
+			Meteor.publish(ch, self.channels[ch]);
 		});
 	}
-
-	return mFrame;
 }

@@ -1,12 +1,8 @@
-angular.module('meteorFrame', [])
+angular.module('ngMFrame', [])
 // Start of the service, needs to be FAR more comprehensive
 .factory('mUtil', [
 	function() {
 		return {
-			// ramda-fy this shit
-			// return array of values for key in collection (pluck)
-			// return indexOf value in array
-			// ? runs entire array first, better to stream each value and cutoff, how to do that functionally ?
 			inColl: function(coll,key,val) {
 				var len = coll.length;
 				for(var i=0;i<len;i++) {
@@ -19,9 +15,7 @@ angular.module('meteorFrame', [])
 		}
 	}
 ])
-// TODO: Change `$meteor` to `$miniMongo` ?  Maybe create multiple services for the pattern?
-// $miniMongo for those that just want client Mongo api
-// $meteor for a more comprehensive api to a Meteor backend server?
+// TODO more abstraction, especially of the interface... require service to be configured a la $routeProvider
 .service('$meteor', [
 	'$rootScope', 'mUtil',
 	function($rootScope, mUtil) {
@@ -56,6 +50,7 @@ angular.module('meteorFrame', [])
 
 				return mdl;
 			},
+			// Routes data from the meteor instance to the bound scope method
 			router: function(scope) {
 				return function(e) {
 					var msg = e.data;
@@ -79,7 +74,6 @@ angular.module('meteorFrame', [])
 				}
 			},
 			interfaces: {
-				// currying, abstract using ramda?
 				// leave and follow pattern of filter?
 				added: function(coll) {
 					return function(doc) {
@@ -115,7 +109,7 @@ angular.module('meteorFrame', [])
 	}
 ])
 // Start of the directive, this should probably be an Element directive and create the iframe on the fly
-.directive('meteorFrame', [
+.directive('mframe', [
 	'$meteor',
 	function($meteor) {
 		return {

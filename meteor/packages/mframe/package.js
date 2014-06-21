@@ -4,5 +4,5 @@ Package.describe({
 
 Package.on_use(function (api) {
     api.add_files('mframe.js', ['client', 'server']);
-    api.export('connectMFrame');
+    api.export('MFrame');
 });

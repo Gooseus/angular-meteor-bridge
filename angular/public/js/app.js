@@ -1,4 +1,4 @@
-var app = angular.module('listverse.app', [ 'listverse.services', 'meteorFrame' ])
+var app = angular.module('listverse.app', [ 'listverse.services', 'ngMFrame' ])
 
 app.controller('AppController', [
 	'$rootScope', '$scope', '$meteor', '$window', '$util', '$api',
@@ -50,6 +50,7 @@ app.controller('AppController', [
 		$scope.expandedComments = {};
 
 		// Meteor-based controls
+		// These should actually all be $api based and avoid passing data in to the mframe, just listen for it coming out
 		$scope.createMessage = function(text) {
 			if(!text) {
 				alert('gotta enter a message to send!');
