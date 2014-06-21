@@ -3,17 +3,17 @@
 new MFrame({
 	collections: [ 'messages', 'lists' ],
 	// These specify which channels we publish from the server
-	// TODO should probably follow the array style for standard forms like these simple find cursors
+	// TODO change to publish to match with Meteor api
 	channels: {
 		'messages': function(params) {
 			console.log('what are publishing again?', params);
 			// I suppose this is where we'd do a check, but everything is public for now
-			return this.collections['messages'].find(params);
+			return this.collections.messages.find(params);
 		},
 		'lists':  function(params) {
 			console.log('what are publishing again?', params);
 			// I suppose this is where we'd do a check, but everything is public for now
-			return this.collections['lists'].find(params);
+			return this.collections.lists.find(params);
 		}
 	},
 	// This is the API we're listening to from outside the iframe

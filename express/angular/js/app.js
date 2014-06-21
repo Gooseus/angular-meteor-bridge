@@ -33,12 +33,9 @@ app.controller('AppController', [
 		$scope.verse = route.verse || 'home'; // the home listverse!
 		$scope.channel = route.channel || 'lists';
 
-		// Meteor-aware models
-		$scope.messages = $meteor.createModel(['added','removed']);
-		$scope.lists = $meteor.createModel(['added','removed','changed']);
-
-		// Set attach this meteor router to the scope and listen to new postMessages on the $window
-		$window.addEventListener('message', $meteor.router($scope));
+		// Meteor-aware models, attached to our scope
+		$scope.messages = $meteor.createModel('messages', ['added','removed']);
+		$scope.lists = $meteor.createModel('lists', ['added','removed','changed']);
 
 		// Subscribe to a $meteor model channel with parameters
 		// this should also be configurable as a provider rather than service, optionally

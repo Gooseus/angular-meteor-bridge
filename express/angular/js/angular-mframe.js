@@ -17,8 +17,8 @@ angular.module('ngMFrame', [])
 ])
 // TODO more abstraction, especially of the interface... require service to be configured a la $routeProvider
 .service('$meteor', [
-	'$rootScope', 'mUtil',
-	function($rootScope, mUtil) {
+	'$rootScope', '$window', 'mUtil',
+	function($rootScope, $window, mUtil) {
 		var svc = {
 			models: {},
 			queue: [],
@@ -42,7 +42,7 @@ angular.module('ngMFrame', [])
 						collection: []
 					},
 					interfaces = interfaces || Object.keys(self.modelInterfaces);
-				
+
 				interfaces.forEach(function(name) {
 					mdl[name] = self.modelInterfaces[name](mdl.collection);
 				});
@@ -52,26 +52,29 @@ angular.module('ngMFrame', [])
 				return mdl;
 			},
 			// Routes data from the meteor instance to the bound scope method
-			router: function(scope) {
-				return function(e) {
-					var msg = e.data;
+			router: function(e) {
+				var msg = e.data;
 
-					console.log('message from meteor', msg);
-					// If we have a collection, its a model opertation
-					// this should be more functional still
-					if(msg.target) {
-						var model = scope[msg.target];
-						scope.$apply(function() {
-							model[msg.fn].apply(model, msg.args);
-						});
-					} else {
-						// if no collection, lets just broadcast the operation
-						console.log('meteor event broadcasted', msg.fn);
-						$rootScope.$apply(function() {
-							$rootScope.$broadcast('mframe.'+msg.fn, msg.args);	
-						});
-					}
-					// console.log('message from server', msg);
+				// discard messages that don't come with function
+				// may want to expand this more and attach specific key to detect messages, or more advanced routing scheme
+				if(!msg.fn) {
+					return;
+				}
+
+				console.log('message from meteor', msg);
+				// If we have a collection, its a model opertation
+				// this should be more functional still
+				if(msg.target) {
+					var model = this.models[msg.target];
+					$rootScope.$apply(function() {
+						model[msg.fn].apply(model, msg.args);
+					});
+				} else {
+					// if no collection, lets just broadcast the operation
+					console.log('meteor event broadcasted', msg.fn);
+					$rootScope.$apply(function() {
+						$rootScope.$broadcast('mframe.'+msg.fn, msg.args);	
+					});
 				}
 			},
 			modelInterfaces: {
@@ -105,6 +108,10 @@ angular.module('ngMFrame', [])
 				}
 			}
 		};
+
+		// Bind the router to the window.onmessage handler which receives postMessages from any iframe
+		// may want to create a way to discard non-meteor based messages
+		$window.addEventListener('message', svc.router.bind(svc));
 
 		return svc;
 	}
