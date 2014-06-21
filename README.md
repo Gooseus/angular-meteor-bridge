@@ -15,14 +15,14 @@ Both the Angular and Meteor side communicate via window.postMessage wrapped meth
 To download these libaries, right now just clone/fork the test app and start picking apart, I'll get to each section further along.
 
 ```
-git clone git@github.com:Gooseus/angular-meteor-bridge.git
+git clone git@github.com:Gooseus/angular-meteor-frame-demo.git
 ```
 
 ##### Install and Run Meteor App
 First make sure Meteor and Meteorite are installed, then
 
 ```
-cd angular-meteor-bridge/meteor/
+cd angular-meteor-frame-demo/meteor/
 mrt add mframe
 mrt install
 mrt
@@ -33,7 +33,7 @@ This will start the meteor iframe app at localhost:3000 and connect to mongo at 
 ##### Install and Run Express App
 
 ```
-cd angular-meteor-bridge/angular/
+cd angular-meteor-frame-demo/angular/
 npm install
 node app.js
 ```
