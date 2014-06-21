@@ -20,15 +20,15 @@ new MFrame({
 	api: {
 		// Perform miniMongo operations from the client side (can't use complex queries, those need to go through separate channel to DB)
 		// These can always go through another service to update the database
-		insert: function(coll,doc) {
-			console.log('inserting doc: ', doc, coll);
+		insert: function(target,doc) {
+			console.log('inserting doc: ', doc, target);
 			doc.created_at = new Date();
-			this.collections[coll].insert(doc);
+			this.collections[target].insert(doc);
 		},
-		update: function(coll,_id,modify) {
-			console.log('updating doc: ', _id, coll, modify);
+		update: function(target,_id,modify) {
+			console.log('updating doc: ', _id, target, modify);
 			modify.$set = { updated_at: new Date() };
-			this.collections[coll].update(_id,modify);
+			this.collections[target].update(_id,modify);
 		},
 		// Subscribe to the Server channels
 		// We definitely need this one for reactive stuff

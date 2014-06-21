@@ -11,12 +11,12 @@ var express = require('express'),
 	db = mongojs('localhost:3001/meteor', ['lists', 'messages']),
 
 	port = 8000,
-	indexHtml = './public/index.html';
+	angularHtml = './angular/index.html';
 	// indexFile = fs.readFileSync('./public/index.html');
 
 app.use(methodOverride());
 app.use(bodyParser());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('./angular'));
 app.use(errorHandler({
   dumpExceptions: true,
   showStack: true
@@ -24,7 +24,7 @@ app.use(errorHandler({
 
 app.get('*', function(req,res) {
 	res.set('Content-Type', 'text/html');
-	fs.createReadStream(indexHtml).pipe(res);
+	fs.createReadStream(angularHtml).pipe(res);
 	// res.send(indexFile);
 });
 
@@ -83,4 +83,4 @@ app.post('/api/v1/list/:list/item/:item/complete', function(req,res) {
 
 
 app.listen(port);
-console.log('listening on port: ' + port);
+console.log('express listening on port: ' + port);

@@ -1,6 +1,4 @@
 function pairToObj(obj,pair) { 
-	if(!obj) obj = {};
-
 	obj[pair[0]] = pair[1];
 	return obj;
 }
@@ -10,7 +8,7 @@ function bindFnObj(ctx,obj) {
 		.map(function(key) { 
 			return [ key, obj[key].bind(ctx) ];
 		})
-		.reduce(pairToObj)
+		.reduce(pairToObj,{})
 }
 
 MFrame = function MFrame(config) {
@@ -29,27 +27,30 @@ MFrame = function MFrame(config) {
 	// });
 
 	if (Meteor.isClient) {
+
+		console.log('I must know the api', self.api);
+
 		self.$broadcast = window.top.postMessage.bind(window.top);
 
 		Meteor.startup(function () {
 			// code to run on server at startup
-			self.$broadcast({ op: 'startup' }, '*');
+			self.$broadcast({ fn: 'startup' }, '*');
 		});
 
 		var observers = {
-			added: function(coll) {
+			added: function(target) {
 				return function(doc) {
-					self.$broadcast({ coll: coll, op: 'added', data: doc  }, '*');
+					self.$broadcast({ target: target, fn: 'added', args: [ doc ] }, '*');
 				}
 			},
-			removed: function(coll) {
+			removed: function(target) {
 				return function(doc) {
-					self.$broadcast({ coll: coll, op: 'removed', data: doc  }, '*');	
+					self.$broadcast({ target: target, fn: 'removed', args: [ doc ] }, '*');	
 				}
 			},
-			changed: function(coll) {
+			changed: function(target) {
 				return function(ndoc,odoc) {
-					self.$broadcast({ coll: coll, op: 'changed', data: ndoc }, '*');
+					self.$broadcast({ target: target, fn: 'changed', args: [ ndoc, odoc ] }, '*');
 				}
 			}
 		};
@@ -57,7 +58,7 @@ MFrame = function MFrame(config) {
 		// Handle incoming client messages (Router goes here)
 		window.onmessage = function(e) {
 			var msg = e.data;
-			console.log('message from angular',self.api,msg);
+			console.log('message from angular', self.api, msg);
 			if(msg.fn) {
 				self.api[msg.fn].apply(null,msg.args);
 			}
