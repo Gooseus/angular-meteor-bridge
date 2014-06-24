@@ -1,0 +1,33 @@
+<div class="col-md-6">
+	<h2>Game Board - {{ game.collection[0].name }}</h2>
+</div>
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Game Chat <strong>#{{ channel }}</strong>
+		</div>
+		<div class="panel-body">
+			<ul class="list-unstyled">
+				<li ng-repeat="msg in messages.collection | orderBy:'created_at'">
+					<strong>{{ msg.user }}:</strong> {{ msg.text }}<br />
+					<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small>
+				</li>
+			</ul>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-xs-12">
+						<input class="form-control" ng-model="msg" placeholder="Enter a message" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-8">
+						<input class="form-control" ng-model="user.name" placeholder="Enter your name" readonly="readonly" />
+					</div>
+					<div class="col-xs-4">
+						<button type="button" class='btn' ng-click="createMessage(msg)">Send Message</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

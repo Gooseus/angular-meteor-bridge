@@ -10,109 +10,12 @@
 		</style>
 	</head>
 	<body ng-controller="AppController">
-		<h1>Grail War / Cut-Throat</h1>
-		<div>
-			<div class="col-md-4">
-				<p>So this is a new idea I had for the demo involving a simple game I'm hoping to make.  The chat piece and maintaining game state reactively will be the focus.</p>
-				<p>It's basically a Diplomacy style game that has some twists.  The goal of the game is to get the Grail from the center of the map back to your Home.</p>
-				<p>The idea is that since the game relies heavily on espionage and communication, it will be heavily reliant on an embedded chat system which allows for broadcast, direct message, and multiple channels for alliances.</p>
-				<p>Most importantly, we must allow as many opportunities for trickery in communication as possible.  So channels are created ad-hoc, but can be shared and viewed without the other members of the channel knowing!<p>
-
-				<p>Here are goals / rules as I see them currently:</p>
-				<ul>
-					<li>Game support for 3/4 - 6/7/8 players (undecided).<li>
-					<li>Everyone starts at a point on the outside of the map which is their Home.</li>
-					<li>Everyone starts with 4 Units (minions), all in their Home (or within 1 space to their home).</li>
-					<li>Units are created every 2 turns(?), 1 new unit per Supply area.</li>
-					<li>
-						Each turn players decide what to do with each of their units. They can:
-						<ul>
-							<li>Move - Move anywhere amongst your conquered Territory, or to 1 adjacent unconquered Territory.</li>
-							<li>Attack - Moving to enemy territory initiates an Attack.  Score up Attack vs Defense points (Units + Support for each side, connected Home yields 1 support).  Tie goes to Defender.</li>
-							<li>Support - Support any adjacent Territory under attack.</li>
-							<li>Defend - Default action when Unit does not take an action.</li>
-						</ul>
-					</li>
-					<li>Unit actions are placed secretly after much deliberation and shown all at once.  Action occurs simultaneously.<li>
-					<li>When a Unit moves out of a Territory, they abandon it.</li>
-					<li>When 2 competing Units move to the same unconqured Territory in the same turn a Showdown occurs.  Each player must decide if their Unit(s) will Attack or Retreat.  If both Attack, normal attack rules occur and any adjacent Players are able to lend support (assuming their Unit did not move, but a tie requires both parties to stand down and retreat.</li>
-					<li>When more than 2 competing Units move to the Attack the same unconquered territory, or 2 competing Units move to Attack the same occupied territory, a Battle occurs.</li>
-					<li>Battles involve multiple rounds of side taking.  First, each player must decide who their allies and enemies and request any outside support.  When everyone has chosen who their enemies and allies are and support has be given or withheld, the battle is joined and numbers get crunched.  Your enemy numbers are compared against your friend numbers, giving you a battle score.  Top score wins the space, tying scores enter a second round of Battle which repeats.  If 2 players tie, a Showdown occurs (see above).</li>
-					<li>The Goal is to Claim the Grail at the center of the board, and return it to your Home.</li>
-					<li>Claiming the Grail involves taking ownership of the Territory containing it and Declaring yourself, and anyone else, as the owner.</li>
-					<li>The Grail cannot move for 1 turn after being claimed (it's a whole ceremony)</li>
-					<li>Once Claimed, the Grail must make it to the Home of one of the Owners, making them the Winner(s)</li>
-					<li>Losing the Territory with the Grail hands it to the winner, who must Claim it in order to move it.</li>
-					<li>Claimants may abandon the Grail, wait a turn, then Reclaim it in order to backstab their allies.  They may also attack their ally who is carrying the Grail, or lend support to other opponents in a bid to Reclaim with another ally.</li>
-					<li>Points are awarded, split between Winners and stored in perpetuity for the record books.</li>
-					<li>In multi-game setups (first to 100, best of 3/5/7), points carry to the following game(s).</li>
-				</ul>
-			</div>
-			<div class="col-md-4">
-				<h3>Lists <small><a href="#" ng-click="createList()">new</a></small></h3>
-				<ul ng-show="lists.collection.length">
-					<li ng-repeat="list in lists.collection">
-						<strong><a href="#" ng-click="goToList(list)">{{ list.name }}</a></strong> <small><a href="#" ng-click="addItem(list)">add</a></small>
-						<ul ng-show="list.items.length">
-							<li ng-repeat="item in list.items">
-								<input type="checkbox" ng-model="item.complete" ng-change="toggleComplete(list,item)" />
-								<span ng-class="{ strike: item.complete }">{{ item.text }}</span>
-								<a href="#" ng-hide="item.complete" ng-click="removeItem(list,item)">&times;</a><br />
-								<small>votes: {{ item.votes }}</small> <a href="#" ng-click="upvote(list,item)">^</a> | <small>comments: {{ item.comments.length }} </small>
-								<a href="#" ng-hide="expandedComments[item._id]" ng-click="expandedComments[item._id]=true">+</a>
-								<a href="#" ng-show="expandedComments[item._id]" ng-click="expandedComments[item._id]=false">-</a>
-								<div ng-if="expandedComments[item._id]">
-									<ul>
-										<li ng-repeat="comment in item.comments">
-											{{ comment.text }} <br />
-											~ <small><i>{{ comment.user.name }}</i></small>
-										</li>
-									</ul>
-									<input type="text" ng-model="newcomment" placeholder="make a comment" /> <button type="button" ng-click="comment(list,item,newcomment)">comment</button>
-								</div>
-							</li>
-						</ul>
-						<p ng-hide="list.items.length">You have no items - <a href="#" ng-click="addItem(list)">Add an item</a></p>
-					</li>
-				</ul>
-				<p ng-hide="lists.collection.length">You have no lists - <a href="#" ng-click="createList()">You should create one</a></p>
-			</div>
-			<div class="col-md-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Chat <strong>#{{ channel }}.{{ verse }}</strong>
-					</div>
-					<div class="panel-body">
-						<ul class="list-unstyled">
-							<li ng-repeat="msg in messages.collection | orderBy:'created_at'">
-								<strong>{{ msg.user }}:</strong> {{ msg.text }}<br />
-								<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small>
-							</li>
-						</ul>
-						<form class="form-horizontal">
-							<div class="form-group">
-								<div class="col-xs-12">
-									<input class="form-control" ng-model="msg" placeholder="Enter a message" />
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-xs-8">
-									<input class="form-control" ng-model="user.name" placeholder="Enter your name" readonly="readonly" />
-								</div>
-								<div class="col-xs-4">
-									<button type="button" class='btn' ng-click="createMessage(msg)">Send Message</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- <iframe mframe src="http://localhost:3000"></iframe> -->
+		
+		<div ng-view></div>
 		<mframe src="http://localhost:3000"></mframe>
 
 		<script type="text/javascript" src="/js/angular.min.js"></script>
+		<script type="text/javascript" src="/js/angular-route.min.js"></script>
 		<script type="text/javascript" src="/js/angular-mframe.js"></script>
 		<script type="text/javascript" src="/js/app-services.js"></script>
 		<script type="text/javascript" src="/js/app.js"></script>

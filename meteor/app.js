@@ -1,7 +1,7 @@
 // This is the entire Meteor app side of the iframe (mframe)
 // Initialize the MFrame with output channels and the input api
 new MFrame({
-	collections: [ 'messages', 'lists' ],
+	collections: [ 'messages', 'games' ],
 	// These specify which channels we publish from the server
 	// TODO change to publish to match with Meteor api
 	channels: {
@@ -10,10 +10,10 @@ new MFrame({
 			// I suppose this is where we'd do a check, but everything is public for now
 			return this.collections.messages.find(params);
 		},
-		'lists':  function(params) {
+		'games':  function(params) {
 			console.log('what are publishing again?', params);
 			// I suppose this is where we'd do a check, but everything is public for now
-			return this.collections.lists.find(params);
+			return this.collections.games.find(params);
 		}
 	},
 	// This is the API we're listening to from outside the iframe
@@ -42,7 +42,7 @@ new MFrame({
 	// TODO all optional, or mandatory with standard forms for specifying function to run before broadcasting data
 	// change name ? broadcasts?
 	observers: {
-		'lists': [ 'added', 'removed', 'changed' ],
+		'games': [ 'added', 'changed' ],
 		'messages': [ 'added', 'removed', 'changed' ]
 	}
 });
