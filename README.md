@@ -46,13 +46,6 @@ Create a list, create items, vote, comment, chat.  All these things currently ge
 
 Check out the respective application folders for more information on what each does and how
 
-## Example App - Listverse
-The example app is a twist on the typical todo list example.
-
-In this app you create lists which can then be individually shared with other people so they can add items or comment/vote on other items.  The owner of the list completes the item and banks the votes as points.
-
-There is also a channel-based chat for each list so there can be more in-depth discussions, however this may either be redundant or render the comments as redundant (probably the latter)
-
 ### Is this all really necessary?
 
 After some more work being put in, I don't think it's necessary no.  But it is pretty damn cool, with some more development I think you could do interesting things.
