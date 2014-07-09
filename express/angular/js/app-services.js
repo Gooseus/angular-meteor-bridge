@@ -1,4 +1,4 @@
-angular.module('listverse.services', [])
+angular.module('tapchat.services', [])
 .factory('$util', [
 	'$location',
 	function($location) {
