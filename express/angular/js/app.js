@@ -11,14 +11,9 @@ app.controller('AppController', [
 		$scope.chname = route[0];
 		$scope.rname = route[1];
 
-		// save rando id in cookie until signup?
-		$scope.user = {
-			rando: random,
-			name: 'rando-' + random
-		};
-
 		// Meteor-aware models, attached to our scope
 		$scope.messages = $meteor.createModel('messages', ['added','removed']);
+		$meteor.setChannelSubscription('messages', { channel: $scope.chname });
 
 		if($scope.rname) {
 			$scope.view = '/views/client.html';
@@ -26,14 +21,7 @@ app.controller('AppController', [
 			// validate here for admin user, and more likely, make admin area a separate angular/meteor app altogether with actual auth
 			$scope.view = '/views/admin.html';
 		}
-	}
-]);
 
-app.controller('ClientController', [
-	'$rootScope', '$scope', '$meteor',
-	function($rootScope,$scope,$meteor) {
-		$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: $scope.rname });
-		
 		// Create client message
 		$scope.createMessage = function(text, room, channel) {
 			if(!text) {
@@ -44,8 +32,8 @@ app.controller('ClientController', [
 			var msg = {
 				text: text,
 				channel: channel,
-				room: rname,
-				user: $scope.user.name
+				room: room,
+				user: $rootScope.user.name
 			};
 
 			$meteor.queueRpc('insert', [ 'messages', msg ]);
@@ -53,26 +41,48 @@ app.controller('ClientController', [
 			delete $scope.msg;
 		};
 	}
-])
+]);
 
-app.controller('AdminController', [
+app.controller('ClientController', [
 	'$rootScope', '$scope', '$meteor',
 	function($rootScope,$scope,$meteor) {
-		$scope.rooms = $meteor.createModel('rooms', ['added','removed']);
-		$meteor.setChannelSubscription('rooms', { channel: $scope.chname });
-
-		$scope.$watch(function() {
-			return $scope.rooms.collection.length;
-		}, function(next) {
-			console.log('do we have rooms?', next)
-		})
-
-		$scope.toggleRoom = function(room) {
-			// Do I need to toggle the last room off?
-			// I need to be able to also count the messages I'm getting and put up multiple rooms
-			$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: room.url });
+		// TODO: add option to save user (cookie? or server with auth?)
+		$rootScope.user = {
+			rando: random,
+			name: 'rando-' + random
 		};
 	}
 ])
 
+app
+.controller('AdminController', [
+	'$rootScope', '$scope', '$meteor',
+	function($rootScope,$scope,$meteor) {
+		$rootScope.active = {};
+
+		$rootScope.user = {
+			admin: true,
+			name: 'TA-Admin'
+		};
+
+		$scope.rooms = $meteor.createModel('rooms', ['added','removed']);
+		$meteor.setChannelSubscription('rooms', { channel: $scope.chname });
+
+		$scope.toggleRoom = function(room) {
+			$rootScope.active[room.url] = room.active = !room.active;
+		};
+	}
+])
+.filter('activeMessages', [
+	'$rootScope', 
+	function($rootScope) {
+		function filterActive(i) {
+			return !!$rootScope.active[i.room];
+		}
+
+		return function(input) {
+			return input.filter(filterActive);
+		};
+	}
+])
 ;
