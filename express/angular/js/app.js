@@ -104,6 +104,10 @@ app
 			$rootScope.active[room.url] = room.active = !room.active;
 		};
 
+		$scope.changeRoom = function(room) {
+			$scope.room = room;
+		}
+
 		$scope.createRoom = function() {
 			var name = prompt('Name the room');
 

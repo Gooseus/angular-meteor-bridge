@@ -33,9 +33,9 @@
 								</div>
 								<div class="panel-body">
 									<ul class="list-group">
-										<li class="list-group-item" ng-repeat="msg in messages.collection | activeMessages | orderBy:'created_at'" ng-class="{ 'list-group-item-warning': msg.room==room }">
+										<li class="list-group-item" ng-repeat="msg in messages.collection | activeMessages | orderBy:'created_at'" ng-class="{ 'list-group-item-warning': msg.room==room }" ng-click="changeRoom(msg.room)">
 											<strong ng-class="{ 'text-success': msg.user._id==user._id }">{{ msg.user.name }}:</strong> {{ msg.text }}<br />
-											<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small>
+											<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small> <small> in #{{ msg.room }}</small>
 										</li>
 									</ul>
 									<form class="form-horizontal">
