@@ -9,6 +9,7 @@
 			.strike { text-decoration: line-through; }
 			.fctrl-tall { height: 100px; }
 			.txt-lg { font-size: 20px; }
+			.show-pointer { cursor: pointer; }
 		</style>
 	</head>
 	<body ng-controller="AppController">
@@ -33,7 +34,7 @@
 								</div>
 								<div class="panel-body">
 									<ul class="list-group">
-										<li class="list-group-item" ng-repeat="msg in messages.collection | activeMessages | orderBy:'created_at'" ng-class="{ 'list-group-item-warning': msg.room==room }" ng-click="changeRoom(msg.room)">
+										<li class="list-group-item show-pointer" ng-repeat="msg in messages.collection | activeMessages | orderBy:'created_at'" ng-class="{ 'list-group-item-warning': msg.room==room }" ng-click="changeRoom(msg.room)">
 											<strong ng-class="{ 'text-success': msg.user._id==user._id }">{{ msg.user.name }}:</strong> {{ msg.text }}<br />
 											<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small> <small> in #{{ msg.room }}</small>
 										</li>
@@ -87,7 +88,7 @@
 							<form class="form-horizontal">
 								<div class="form-group form-group-lg">
 									<div class="col-md-10">
-										<input class="form-control fctrl-tall txt-lg" ng-model="text.msg" placeholder="Enter a message" /><br />
+										<input class="form-control fctrl-tall txt-lg" ng-model="text.msg" placeholder="Enter a message" ng-keyup="enterMessage($event,text,rname,chname)" /><br />
 									</div>
 									<div class="col-md-2">
 										<div class="row">

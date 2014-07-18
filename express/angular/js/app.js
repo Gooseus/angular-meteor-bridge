@@ -60,6 +60,12 @@ app.controller('ClientController', [
 			$cookieStore.put('tc_usr', JSON.stringify($rootScope.user));
 		}
 
+		$scope.enterMessage = function(e) {
+			if(e.keyCode==13) {
+				$scope.createMessage.apply($scope,Array.prototype.slice.call(arguments,1));
+			}
+		}
+
 		$scope.$watch('rname', function(rname) {
 			if(rname) {
 
