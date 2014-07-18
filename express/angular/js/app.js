@@ -1,4 +1,4 @@
-var app = angular.module('tapchat.app', [ 'tapchat.services', 'ngRoute', 'ngMFrame' ])
+var app = angular.module('tapchat.app', [ 'tapchat.services', 'ngRoute', 'ngMFrame', 'ngCookies' ])
 
 app.controller('AppController', [
 	'$rootScope', '$scope', '$route', '$meteor', '$window', '$location', '$util', '$api',
@@ -51,15 +51,32 @@ app.controller('AppController', [
 ]);
 
 app.controller('ClientController', [
-	'$rootScope', '$scope', '$meteor',
-	function($rootScope,$scope,$meteor) {
+	'$rootScope', '$scope', '$meteor', '$cookieStore',
+	function($rootScope,$scope,$meteor,$cookieStore) {
 		// TODO: add option to save user (cookie? or server with auth?)
 		console.log('loading client controller');
-		var random = Math.random().toString(32).slice(2);
-		$rootScope.user = {
-			_id: random,
-			name: 'rando-' + random
-		};
+		var _user;
+
+		$scope.saveUser = function(name) {
+			$rootScope.user.name = name;
+			$cookieStore.put('tc_usr', JSON.stringify($rootScope.user));
+		}
+
+		$scope.$watch(function() {
+			return $rootScope.user.name;
+		}, $scope.saveUser);
+
+
+		if(_user = $cookieStore.get('tc_usr')) { 
+			$rootScope.user = JSON.parse(_user);
+		} else {
+			var random = Math.random().toString(32).slice(2);
+
+			$rootScope.user = {
+				_id: random,
+				name: prompt('Name for Chatroom ' + $scope.rname, 'rando-' + random) || 'rando-' + random
+			};
+		}
 	}
 ])
 
