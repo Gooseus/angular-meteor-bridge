@@ -12,17 +12,20 @@ app.controller('AppController', [
 
 		// Meteor-aware models, attached to our scope
 		$scope.messages = $meteor.createModel('messages', ['added','removed']);
-		$meteor.setChannelSubscription('messages', { channel: $scope.chname });
+		
 
 		if($scope.rname) {
 			$scope.view = '/views/client.html';
+			$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: $scope.rname });
 		} else {
 			// validate here for admin user, and more likely, make admin area a separate angular/meteor app altogether with actual auth
 			$scope.view = '/views/admin.html';
+			$meteor.setChannelSubscription('messages', { channel: $scope.chname });
 		}
 
 		// Create client message
 		$scope.createMessage = function(text, room, channel) {
+			console.log('what we gonna create', arguments);
 			if(!text.msg) {
 				alert('gotta enter a message to send!');
 				return;
@@ -72,6 +75,17 @@ app
 
 		$scope.toggleRoom = function(room) {
 			$rootScope.active[room.url] = room.active = !room.active;
+		};
+
+		$scope.createRoom = function() {
+			var name = prompt('Name the room');
+
+			if(name) {
+				var url = name.toLowerCase().replace(/\s+/,'-').replace(/[^a-z0-9\-_~]+/,'');
+				$meteor.queueRpc('insert', [ 'rooms', { url: url, name: name, channel: $scope.chname } ]);
+			} else {
+				alert('gotta give the channel a name');
+			}
 		};
 	}
 ])

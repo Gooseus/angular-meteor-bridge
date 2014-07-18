@@ -4,12 +4,16 @@
 		<ul class="list-unstyled list-group">
 			<li ng-repeat="r in rooms.collection"><a class="list-group-item" ng-class="{ 'list-group-item-info': r.active }" href="#" ng-click="toggleRoom(r)">{{ r.name }}</a></li>
 		</ul>
+		<button ng-click="createRoom()">Create Room</button>
 	</div>
 	<div class="col-xs-9">
 		<div class="row">
 			<div class="panel panel-default {{ colSize }}" >
 				<div class="panel-heading">
 					Chat <strong>@{{ chname }}</strong>
+					<ul class="list-unstyled list-inline inline">
+						<li ng-repeat="r in rooms.collection | filter:{ 'active': true }"><a target="_blank" ng-href="/{{ chname }}/{{ r.url }}">#{{ r.url }}</a></li>
+					</ul>
 				</div>
 				<div class="panel-body">
 					<ul class="list-group">
@@ -21,7 +25,7 @@
 					<form class="form-horizontal">
 						<div class="form-group">
 							<div class="col-md-10">
-								<input class="form-control fctrl-tall txt-lg" ng-model="msg" placeholder="Enter a message" /><br />
+								<input class="form-control fctrl-tall txt-lg" ng-model="text.msg" placeholder="Enter a message" /><br />
 								<input id="msgAuthor" class="form-control" ng-model="user.name" readonly="readonly" placeholder="Enter your name" />
 							</div>
 							<div class="col-md-2">
