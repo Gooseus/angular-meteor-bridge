@@ -28,7 +28,7 @@
 								<div class="panel-heading">
 									Chat <strong>@{{ chname }}</strong>
 									<ul class="list-unstyled list-inline inline">
-										<li ng-repeat="r in rooms.collection | filter:{ 'active': true }"><a target="_blank" ng-href="/{{ chname }}/{{ r.url }}">#{{ r.url }}</a></li>
+										<li ng-repeat="r in rooms.collection | filter:{ 'active': true }"><a target="_blank" ng-href="#{{ chname }}/{{ r.url }}">#{{ r.url }}</a></li>
 									</ul>
 								</div>
 								<div class="panel-body">

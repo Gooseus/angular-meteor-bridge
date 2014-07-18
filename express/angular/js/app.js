@@ -1,27 +1,25 @@
-var app = angular.module('tapchat.app', [ 'tapchat.services', 'ngRoute', 'ngMFrame', 'ngCookies' ])
+var app = angular.module('tapchat.app', [ 'tapchat.services', 'ngMFrame', 'ngCookies' ])
 
 app.controller('AppController', [
-	'$rootScope', '$scope', '$route', '$meteor', '$window', '$location', '$util', '$api',
-	function ($rootScope, $scope, $route, $meteor, $window, $location, $util, $api) {
+	'$rootScope', '$scope', '$meteor', '$window', '$location', '$util', '$api',
+	function ($rootScope, $scope, $meteor, $window, $location, $util, $api) {
 		// var path = $util.locationPart('hash').slice(1),
 		// 	// route = $util.splitPathRoute(path),
 		// 	route = path.split('/');
 
+		$scope.chname = window.location.pathname.slice(1).split('/')[0] || 'tapchat';
+
+		console.log('chname', $scope.chname);
 
 		$scope.$watch(function() {
-			return $location.hash();
-		}, function(path) {
-			var route = path.split('/');
-			$scope.chname = route[0];
-			$scope.rname = route[1];
+			return window.location.hash;
+		}, function(hash) {
+			if(hash) {
+				var route = hash.slice(2).split('?')[0].split('/');
 
-			if($scope.rname) {
-				$scope.view = '/views/client.html';
-				$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: $scope.rname });
-			} else {
-				// validate here for admin user, and more likely, make admin area a separate angular/meteor app altogether with actual auth
-				$scope.view = '/views/admin.html';
-				$meteor.setChannelSubscription('messages', { channel: $scope.chname });
+				console.log('testing location watch', hash, route);
+
+				$scope.rname = route[0];
 			}
 		});
 		
@@ -62,21 +60,27 @@ app.controller('ClientController', [
 			$cookieStore.put('tc_usr', JSON.stringify($rootScope.user));
 		}
 
-		$scope.$watch(function() {
-			return $rootScope.user.name;
-		}, $scope.saveUser);
+		$scope.$watch('rname', function(rname) {
+			if(rname) {
 
+				if(_user = $cookieStore.get('tc_usr')) { 
+					$rootScope.user = JSON.parse(_user);
+				} else {
+					var random = Math.random().toString(32).slice(2);
 
-		if(_user = $cookieStore.get('tc_usr')) { 
-			$rootScope.user = JSON.parse(_user);
-		} else {
-			var random = Math.random().toString(32).slice(2);
+					$rootScope.user = {
+						_id: random,
+						name: prompt('Name for Chatroom ' + rname, 'rando-' + random) || 'rando-' + random
+					};
+				}
 
-			$rootScope.user = {
-				_id: random,
-				name: prompt('Name for Chatroom ' + $scope.rname, 'rando-' + random) || 'rando-' + random
-			};
-		}
+				$scope.$watch(function() {
+					return $rootScope.user.name;
+				}, $scope.saveUser);
+
+				$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: $scope.rname });
+			}
+		});
 	}
 ])
 
@@ -94,6 +98,7 @@ app
 
 		$scope.rooms = $meteor.createModel('rooms', ['added','removed']);
 		$meteor.setChannelSubscription('rooms', { channel: $scope.chname });
+		$meteor.setChannelSubscription('messages', { channel: $scope.chname });
 
 		$scope.toggleRoom = function(room) {
 			$rootScope.active[room.url] = room.active = !room.active;
