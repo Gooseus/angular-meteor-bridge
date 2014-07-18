@@ -1,27 +1,32 @@
 var app = angular.module('tapchat.app', [ 'tapchat.services', 'ngRoute', 'ngMFrame' ])
 
 app.controller('AppController', [
-	'$rootScope', '$scope', '$route', '$meteor', '$window', '$util', '$api',
-	function ($rootScope, $scope, $route, $meteor, $window, $util, $api) {
-		var path = $util.locationPart('pathname').slice(1),
-			// route = $util.splitPathRoute(path),
-			route = path.split('/');
+	'$rootScope', '$scope', '$route', '$meteor', '$window', '$location', '$util', '$api',
+	function ($rootScope, $scope, $route, $meteor, $window, $location, $util, $api) {
+		// var path = $util.locationPart('hash').slice(1),
+		// 	// route = $util.splitPathRoute(path),
+		// 	route = path.split('/');
 
-		$scope.chname = route[0];
-		$scope.rname = route[1];
 
+		$scope.$watch(function() {
+			return $location.hash();
+		}, function(path) {
+			var route = path.split('/');
+			$scope.chname = route[0];
+			$scope.rname = route[1];
+
+			if($scope.rname) {
+				$scope.view = '/views/client.html';
+				$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: $scope.rname });
+			} else {
+				// validate here for admin user, and more likely, make admin area a separate angular/meteor app altogether with actual auth
+				$scope.view = '/views/admin.html';
+				$meteor.setChannelSubscription('messages', { channel: $scope.chname });
+			}
+		});
+		
 		// Meteor-aware models, attached to our scope
 		$scope.messages = $meteor.createModel('messages', ['added','removed']);
-		
-
-		if($scope.rname) {
-			$scope.view = '/views/client.html';
-			$meteor.setChannelSubscription('messages', { channel: $scope.chname, room: $scope.rname });
-		} else {
-			// validate here for admin user, and more likely, make admin area a separate angular/meteor app altogether with actual auth
-			$scope.view = '/views/admin.html';
-			$meteor.setChannelSubscription('messages', { channel: $scope.chname });
-		}
 
 		// Create client message
 		$scope.createMessage = function(text, room, channel) {
