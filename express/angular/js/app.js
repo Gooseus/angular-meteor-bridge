@@ -5,8 +5,7 @@ app.controller('AppController', [
 	function ($rootScope, $scope, $route, $meteor, $window, $util, $api) {
 		var path = $util.locationPart('pathname').slice(1),
 			// route = $util.splitPathRoute(path),
-			route = path.split('/'),
-			random = $util.randomId();
+			route = path.split('/');
 
 		$scope.chname = route[0];
 		$scope.rname = route[1];
@@ -24,21 +23,21 @@ app.controller('AppController', [
 
 		// Create client message
 		$scope.createMessage = function(text, room, channel) {
-			if(!text) {
+			if(!text.msg) {
 				alert('gotta enter a message to send!');
 				return;
 			}
 
 			var msg = {
-				text: text,
+				text: text.msg,
 				channel: channel,
 				room: room,
-				user: $rootScope.user.name
+				user: $rootScope.user
 			};
 
 			$meteor.queueRpc('insert', [ 'messages', msg ]);
 
-			delete $scope.msg;
+			delete text.msg;
 		};
 	}
 ]);
@@ -47,8 +46,10 @@ app.controller('ClientController', [
 	'$rootScope', '$scope', '$meteor',
 	function($rootScope,$scope,$meteor) {
 		// TODO: add option to save user (cookie? or server with auth?)
+		console.log('loading client controller');
+		var random = Math.random().toString(32).slice(2);
 		$rootScope.user = {
-			rando: random,
+			_id: random,
 			name: 'rando-' + random
 		};
 	}
@@ -61,6 +62,7 @@ app
 		$rootScope.active = {};
 
 		$rootScope.user = {
+			_id: 'ta-admin',
 			admin: true,
 			name: 'TA-Admin'
 		};

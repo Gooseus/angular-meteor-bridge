@@ -1,31 +1,33 @@
-<div class="page-header">
-	<h1>TapChat - IRC via NFC <small>| Powered by Thinaire</small></h1>
-</div>
-<div class="panel panel-default" ng-controller="ClientController">
-	<div class="panel-heading">
-		Chat <strong>#{{ rname }}</strong>
+<div ng-controller="ClientController">
+	<div class="page-header">
+		<h1>TapChat - IRC via NFC <small>| Powered by Thinaire</small></h1>
 	</div>
-	<div class="panel-body">
-		<ul class="list-unstyled">
-			<li ng-repeat="msg in messages.collection | orderBy:'created_at'">
-				<strong>{{ msg.user }}:</strong> {{ msg.text }}<br />
-				<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small>
-			</li>
-		</ul>
-		<form class="form-horizontal">
-			<div class="form-group">
-				<div class="col-md-10">
-					<input class="form-control fctrl-tall txt-lg" ng-model="msg" placeholder="Enter a message" /><br />
-				</div>
-				<div class="col-md-2">
-					<div class="row text-center">
-						<button type="button" class='btn btn-lg' ng-click="createMessage(msg,rname,chname)">Send Message</button>
-					</div><br />
-					<div class="row form-inline">
-						<input id="msgAuthor" class="form-control" ng-model="user.name" placeholder="Enter your name" />
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Chat <strong>@{{ chname }}</strong> <strong>#{{ rname }}</strong>
+		</div>
+		<div class="panel-body">
+			<ul class="list-unstyled">
+				<li ng-repeat="msg in messages.collection | orderBy:'created_at'">
+					<strong ng-class="{ 'text-success': msg.user._id==user._id }">{{ msg.user.name }}:</strong> {{ msg.text }}<br />
+					<small>at {{ msg.created_at | date:'yyyy-MM-dd hh:ss' }}</small>
+				</li>
+			</ul>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-md-10">
+						<input class="form-control fctrl-tall txt-lg" ng-model="text.msg" placeholder="Enter a message" /><br />
+					</div>
+					<div class="col-md-2">
+						<div class="row text-center">
+							<button type="button" class='btn btn-lg' ng-click="createMessage(text,rname,chname)">Send Message</button>
+						</div><br />
+						<div class="row form-inline">
+							<input id="msgAuthor" class="form-control" ng-model="user.name" placeholder="Enter your name" />
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
+			</form>
+		</div>
 	</div>
 </div>
